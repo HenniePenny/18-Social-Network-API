@@ -1,15 +1,10 @@
-const { Schema, Types } = require("mongoose");
-
-//import Thought and Reaction b/c using it as sub-documents
-//!is this correct?
-const thoughtSchema = require("./Thought");
-const reactionSchema = require("./Reaction");
+const { Schema, model } = require("mongoose");
 
 //source: https://stackoverflow.com/questions/18022365/mongoose-validate-email-syntax
-const emailValidation = (email) => {
-  const regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-  return regex.test(email);
-};
+// const emailValidation = (email) => {
+//   const regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+//   return regex.test(email);
+// };
 
 const userSchema = new Schema(
   {
@@ -23,7 +18,7 @@ const userSchema = new Schema(
       type: String,
       unique: true,
       required: true,
-      validate: [emailValidation, "Please fill in a valid email address"],
+      // validate: [emailValidation, "Please fill in a valid email address"],
       match: [
         /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
         "Please fill in a valid email address",
