@@ -1,6 +1,6 @@
-const { Schema, Types } = require("mongoose");
-const reactionSchema = require("./User");
-//!Do I need to import the user schema?
+const { Schema, model } = require("mongoose");
+const { format_date } = require("../utils/helper");
+const reactionSchema = require("./Reaction");
 
 const thoughtSchema = new Schema(
   {
@@ -13,7 +13,7 @@ const thoughtSchema = new Schema(
     createdAt: {
       type: Date,
       default: Date.now,
-      //!Use a getter method to format the timestamp on query
+      get: format_date,
     },
     username: {
       type: String,
@@ -31,7 +31,7 @@ const thoughtSchema = new Schema(
 );
 
 //create virtual called "reactionCount"
-userSchema.virtual("reactionCount").get(function () {
+thoughtSchema.virtual("reactionCount").get(function () {
   return this.reactions.length;
 });
 
