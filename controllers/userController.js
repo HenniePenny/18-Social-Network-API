@@ -15,7 +15,7 @@ module.exports = {
       .populate("friends")
       .then((user) =>
         !user
-          ? res.status(404).json({ message: "No user with that ID" })
+          ? res.status(404).json({ message: "No user found with that ID. 👀" })
           : res.json(user)
       )
       .catch((err) => {
@@ -37,11 +37,11 @@ module.exports = {
     User.findOneAndDelete({ _id: req.params.userId })
       .then((user) =>
         !user
-          ? res.status(404).json({ message: "No user found with that ID!" })
+          ? res.status(404).json({ message: "No user found with that ID. 👀" })
           : Thought.deleteMany({ _id: { $in: user.thoughts } })
       )
       .then(() =>
-        res.json({ message: "User and their associated thoughts deleted!" })
+        res.json({ message: "User and their associated thoughts deleted! 👍" })
       )
       .catch((err) => res.status(500).json(err));
   },
@@ -54,7 +54,35 @@ module.exports = {
     )
       .then((user) =>
         !user
-          ? res.status(404).json({ message: "No user found with this id!" })
+          ? res.status(404).json({ message: "No user found with this id. 👀" })
+          : res.json(user)
+      )
+      .catch((err) => res.status(500).json(err));
+  },
+  //add a new friend to a user
+  addFriend(req, res) {
+    User.findOneAndUpdate(
+      { _id: req.params.userId },
+      { $addToSet: { friends: req.params.friendId } },
+      { runValidators: true, new: true }
+    )
+      .then((user) =>
+        !user
+          ? res.status(404).json({ message: "No user found with this id. 👀" })
+          : res.json(user)
+      )
+      .catch((err) => res.status(500).json(err));
+  },
+  // remove a friend
+  removeFriend(req, res) {
+    User.findOneAndUpdate(
+      { _id: req.params.userId },
+      { $pull: { friends: req.params.friendId } },
+      { runValidators: true, new: true }
+    )
+      .then((user) =>
+        !user
+          ? res.status(404).json({ message: "No user found with this id. 👀" })
           : res.json(user)
       )
       .catch((err) => res.status(500).json(err));
