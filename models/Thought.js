@@ -1,5 +1,6 @@
 const { Schema, Types } = require("mongoose");
 const reactionSchema = require("./User");
+//!Do I need to import the user schema?
 
 const thoughtSchema = new Schema(
   {
