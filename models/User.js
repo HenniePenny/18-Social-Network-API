@@ -1,6 +1,7 @@
 const { Schema, Types } = require("mongoose");
 
 //import Thought and Reaction b/c using it as sub-documents
+//!is this correct?
 const thoughtSchema = require("./Thought");
 const reactionSchema = require("./Reaction");
 
