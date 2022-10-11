@@ -26,13 +26,13 @@ module.exports = {
   createThought(req, res) {
     Thought.create(req.body)
       //!push thought's id to associated user's thought array ?? does this work?
-      .then(({ _id }) => {
-        return User.findOneAndUpdate(
-          { _id: req.params.userId },
-          { $push: { thoughts: _id } },
-          { runValidators: true, new: true }
-        );
-      })
+      // .then(({ _id }) => {
+      //   return User.findOneAndUpdate(
+      //     { _id: req.params.userId },
+      //     { $push: { thoughts: _id } },
+      //     { runValidators: true, new: true }
+      //   );
+      // })
       .then((thought) => res.json(thought))
       .catch((err) => {
         console.log(err);
