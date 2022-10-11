@@ -24,7 +24,7 @@ module.exports = {
   },
   //post to create a new thought
   createThought(req, res) {
-    // Thought.create(req.body)
+    Thought.create(req.body);
     //   //!push thought's id to associated user's thought array ?? does this work?
     //   .then(({ _id }) => {
     //     return User.findOneAndUpdate(
@@ -40,7 +40,7 @@ module.exports = {
     //   });
     User.findOneAndUpdate(
       { _id: req.params.userId },
-      { $addToSet: { thoughts: req.params.thoughtId } },
+      { $push: { thoughts: req.params.thoughtId } },
       { runValidators: true, new: true }
     )
       .then((thought) =>
@@ -57,6 +57,7 @@ module.exports = {
     Thought.findOneAndUpdate(
       { _id: req.params.thoughtId },
       { $set: req.body },
+      { $set: req.body.createdAt },
       { runValidators: true, new: true }
     )
       .then((thought) =>
@@ -84,8 +85,14 @@ module.exports = {
       )
       .catch((err) => res.status(500).json(err));
   },
+  //!Post to create a reaction stored in a single thought's reactions field array
+  // createReaction(req, res) {
+  //   Thought.findOneAndUpdate(
+  //     { _id: req.params.thoughtId },
+  //     { $addToSet: { reactions: req.body.thoughtId } },
+  //     { runValidators: true, new: true }
+  //   );
+  // },
 };
-
-//!Post to create a reaction stored in a single thought's reactions field array
 
 // Delete to pull and remove a reaction by the reaction's reactionId value
