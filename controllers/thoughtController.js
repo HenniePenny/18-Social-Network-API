@@ -24,26 +24,67 @@ module.exports = {
   },
   //post to create a new thought
   createThought(req, res) {
-    Thought.create(req.body)
-      //!push thought's id to associated user's thought array ?? does this work?
-      // .then(({ _id }) => {
-      //   return User.findOneAndUpdate(
-      //     { _id: req.params.userId },
-      //     { $push: { thoughts: _id } },
-      //     { runValidators: true, new: true }
-      //   );
-      // })
-      .then((thought) => res.json(thought))
-      .catch((err) => {
-        console.log(err);
-        return res.status(500).json(err);
-      });
+    // Thought.create(req.body)
+    //   //!push thought's id to associated user's thought array ?? does this work?
+    //   .then(({ _id }) => {
+    //     return User.findOneAndUpdate(
+    //       { _id: req.params.userId },
+    //       { $push: { thoughts: _id } },
+    //       { runValidators: true, new: true }
+    //     );
+    //   })
+    //   .then((thought) => res.json(thought))
+    //   .catch((err) => {
+    //     console.log(err);
+    //     return res.status(500).json(err);
+    //   });
+    User.findOneAndUpdate(
+      { _id: req.params.userId },
+      { $addToSet: { thoughts: req.params.thoughtId } },
+      { runValidators: true, new: true }
+    )
+      .then((thought) =>
+        !thought
+          ? res
+              .status(404)
+              .json({ message: "No data found to display here. 👀" })
+          : res.json(thought)
+      )
+      .catch((err) => res.status(500).json(err));
+  },
+  //put to update a thought by its id
+  updateThought(req, res) {
+    Thought.findOneAndUpdate(
+      { _id: req.params.thoughtId },
+      { $set: req.body },
+      { runValidators: true, new: true }
+    )
+      .then((thought) =>
+        !thought
+          ? res
+              .status(404)
+              .json({ message: "No thought found with this id. 👀" })
+          : res.json(thought)
+      )
+      .catch((err) => res.status(500).json(err));
+  },
+  //delete to remove a thought by its id
+  removeThought(req, res) {
+    Thought.findOneAndUpdate(
+      { _id: req.params.thoughtId },
+      { $pull: { thoughts: req.params.thoughtId } },
+      { runValidators: true, new: true }
+    )
+      .then((thought) =>
+        !thought
+          ? res
+              .status(404)
+              .json({ message: "No thought found with this id. 👀" })
+          : res.json(thought)
+      )
+      .catch((err) => res.status(500).json(err));
   },
 };
-
-//put to update a thought by its id
-
-//delete to remove a thought by its id
 
 //!Post to create a reaction stored in a single thought's reactions field array
 
