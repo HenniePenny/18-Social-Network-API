@@ -1,4 +1,4 @@
-const { Thought } = require("../models");
+const { Thought, User } = require("../models");
 
 module.exports = {
   //get all thoughts
@@ -22,7 +22,23 @@ module.exports = {
         res.status(500).json(err);
       });
   },
-  //post to create a new thought //!push created thought's id to associated user's thoughts array field
+  //post to create a new thought
+  createThought(req, res) {
+    Thought.create(req.body)
+      //!push thought's id to associated user's thought array ?? does this work?
+      .then(({ _id }) => {
+        return User.findOneAndUpdate(
+          { _id: req.params.userId },
+          { $push: { thoughts: _id } },
+          { runValidators: true, new: true }
+        );
+      })
+      .then((thought) => res.json(thought))
+      .catch((err) => {
+        console.log(err);
+        return res.status(500).json(err);
+      });
+  },
 };
 
 //put to update a thought by its id
