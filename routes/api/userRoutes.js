@@ -14,7 +14,6 @@ const router = require("express").Router();
 router.route("/").get(getUsers).post(createUser);
 
 // /api/users/:userId
-// router.get("/", getUsers)
 router.route("/:userId").get(getSingleUser).delete(deleteUser).put(updateUser);
 
 // /api/users/:userId/friends/:friendId
