@@ -24,7 +24,26 @@ module.exports = {
   },
   //post to create a new thought
   createThought(req, res) {
-    Thought.create(req.body);
+    Thought.create(req.body)
+      .then((thought) => {
+        return User.findOneAndUpdate(
+          { _id: req.body.userId },
+          { $addToSet: { thoughts: thought._id } },
+          { new: true }
+        );
+      })
+      .then((user) =>
+        !user
+          ? res.status(404).json({
+              message: "Thought created, but no user found with this id. 👀",
+            })
+          : res.json("The thought was created. 👍")
+      )
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json(err);
+      });
+    //! send userId and/or thoughtId in params
     //   //!push thought's id to associated user's thought array ?? does this work?
     //   .then(({ _id }) => {
     //     return User.findOneAndUpdate(
@@ -38,19 +57,19 @@ module.exports = {
     //     console.log(err);
     //     return res.status(500).json(err);
     //   });
-    User.findOneAndUpdate(
-      { _id: req.params.userId },
-      { $push: { thoughts: req.params.thoughtId } },
-      { runValidators: true, new: true }
-    )
-      .then((thought) =>
-        !thought
-          ? res
-              .status(404)
-              .json({ message: "No data found to display here. 👀" })
-          : res.json(thought)
-      )
-      .catch((err) => res.status(500).json(err));
+    // User.findOneAndUpdate(
+    //   { _id: req.body.userId },
+    //   { $push: { thoughts: req.body.thoughtId } },
+    //   { runValidators: true, new: true }
+    // )
+    //   .then((thought) =>
+    //     !thought
+    //       ? res
+    //           .status(404)
+    //           .json({ message: "No data found to display here. 👀" })
+    //       : res.json(thought)
+    //   )
+    //   .catch((err) => res.status(500).json(err));
   },
   //put to update a thought by its id
   updateThought(req, res) {
