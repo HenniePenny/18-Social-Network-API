@@ -43,33 +43,6 @@ module.exports = {
         console.log(err);
         res.status(500).json(err);
       });
-    //! send userId and/or thoughtId in params
-    //   //!push thought's id to associated user's thought array ?? does this work?
-    //   .then(({ _id }) => {
-    //     return User.findOneAndUpdate(
-    //       { _id: req.params.userId },
-    //       { $push: { thoughts: _id } },
-    //       { runValidators: true, new: true }
-    //     );
-    //   })
-    //   .then((thought) => res.json(thought))
-    //   .catch((err) => {
-    //     console.log(err);
-    //     return res.status(500).json(err);
-    //   });
-    // User.findOneAndUpdate(
-    //   { _id: req.body.userId },
-    //   { $push: { thoughts: req.body.thoughtId } },
-    //   { runValidators: true, new: true }
-    // )
-    //   .then((thought) =>
-    //     !thought
-    //       ? res
-    //           .status(404)
-    //           .json({ message: "No data found to display here. 👀" })
-    //       : res.json(thought)
-    //   )
-    //   .catch((err) => res.status(500).json(err));
   },
   //put to update a thought by its id
   updateThought(req, res) {
@@ -115,7 +88,7 @@ module.exports = {
       )
       .catch((err) => res.status(500).json(err));
   },
-  //!Post to create a reaction stored in a single thought's reactions field array
+  //Post to create a reaction stored in a single thought's reactions field array
   addReaction(req, res) {
     Thought.findOneAndUpdate(
       { _id: req.params.thoughtId },
@@ -131,6 +104,20 @@ module.exports = {
       )
       .catch((err) => res.status(500).json(err));
   },
+  // Delete to pull and remove a reaction by the reaction's reactionId value
+  removeReaction(req, res) {
+    Thought.findOneAndUpdate(
+      { _id: req.params.thoughtId },
+      { $pull: { reactions: { reactionID: req.params.reactionId } } },
+      { runValidators: true, new: true }
+    )
+      .then((thought) =>
+        !thought
+          ? res
+              .status(404)
+              .json({ message: "No reaction found with this id. 👀" })
+          : res.json(thought)
+      )
+      .catch((err) => res.status(500).json(err));
+  },
 };
-
-// Delete to pull and remove a reaction by the reaction's reactionId value
